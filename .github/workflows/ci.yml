@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Pipelines
+        run: python -m src.pipeline
+
+      - name: Build Docker images
+        run: |
+          docker build -t api -f api/Dockerfile .
+          docker build -t ui -f ui/Dockerfile .
