@@ -1,9 +1,6 @@
 import streamlit as st
 import requests
-import os
 from datetime import date
-
-API_URL = os.getenv("API_URL", "http://localhost:8000")
 
 st.set_page_config(layout="wide")
 st.title("🛒 Rossmann Sales Forecaster")
@@ -78,10 +75,10 @@ payload = {
 if st.button("Forecast", use_container_width=True):
     with st.spinner("Generating forecast..."):
         try:
-            response = requests.post(f"{API_URL}/predict", json=payload, timeout=10)
+            response = requests.post(f"http://localhost:8000/predict", json=payload, timeout=10)
             response.raise_for_status()
             prediction = response.json()
-            predicted_sales = prediction.get("predicted_sales")
-            st.success(f"Predicted Sales: ${predicted_sales:.2f}")
+            predicted_sales = prediction.get("prediction")
+            st.metric("Predicted Sales", f"${predicted_sales:,.2f}")
         except Exception as e:
             st.error(f"Error: {e}")
